@@ -20,12 +20,27 @@ namespace ToDoList.Controllers
 
         public void Insert(TodoVM todo)
         {
-            string connStr = "server=localhost;userid=todouser;password=todouser2022;databse=TodoListDB";
-            using (MySqlConnection conn = new MySqlConnection(connStr))
+            // Chaine de connexion
+            string connStr = "server=localhost;userid=todouser;password=todouser2022;database=TodoListDB";
+
+            // Instancie un objet MySqlConnection
+
+/*            // Requête SQL
+            var stm = "SELECT VERSION()";
+            // Instancie un objet MySqlCommand (execute la requete)
+            var cmd = new MySqlCommand(stm, connection);
+
+            // Retourne la première ligne du résultat et surtout la première colonne
+            var version = cmd.ExecuteScalar().ToString();
+            Console.WriteLine($"MySQL Version : {version}");*/
+
+            // Ferme la connexion
+
+            using (MySqlConnection connexion = new MySqlConnection(connStr))
             {
-                using (var tableCmd = conn.CreateCommand())
+                using (var tableCmd = connexion.CreateCommand())
                 {
-                    conn.Open();
+                    connexion.Open();
                     tableCmd.CommandText = $"INSERT INTO todo (Task) VALUES ('{todo.Task}')";
                     try
                     {
