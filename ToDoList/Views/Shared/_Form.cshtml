@@ -1,0 +1,10 @@
+﻿@model TodoVM
+
+<form asp-action="insert" id="form-action" method="post" role="form">
+    <div asp-validation-summary="All"></div>
+    <label asp-for="Task"></label>
+    <input asp-for="Id" type="hidden" />
+    <input asp-for="Task" />
+    <span asp-validation-for="Task"></span>
+    <input type="submit" id="form-button" value="Ajouter Tâche"
+</form>
