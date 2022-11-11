@@ -4,3 +4,7 @@ CREATE TABLE todo (
     Task VARCHAR(255) NOT NULL,
     PRIMARY KEY (Id)
 );
+
+CREATE USER 'todouser'@'localhost' IDENTIFIED BY 'todouser2022';
+GRANT ALL PRIVILEGES ON TodoListDB.* TO 'todouser'@'localhost';
+FLUSH PRIVILEGES;
