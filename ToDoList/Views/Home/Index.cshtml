@@ -1,5 +1,24 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model TodoViewModel
 
-La table sera là
+        <table>
+            <thead>
+                <tr>
+                    <th class="col">Id</th>
+                    <th class="col">Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var task in Model.TodoList)
+                {
+                    <tr>
+                        <td class="todos-column" scope="row">@task.Id</td>
+                        <td class="todos-column">@task.Task</td>
+                        <td class="buttons-column">
+                            <input id ="delete-btn" data-task-id="@task.Id" type="submit" value="Supprimer">
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

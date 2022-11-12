@@ -1,6 +1,6 @@
 namespace ToDoList.Models
 {
-    public class TodoVM
+    public class TodoItem
     {
         public string Task { get; set; }
 
