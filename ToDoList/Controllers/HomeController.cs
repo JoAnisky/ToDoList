@@ -22,9 +22,9 @@ namespace ToDoList.Controllers
 
         [HttpGet]
 
-        public JsonResult PopulateForm([FromBody] TodoItem Id)
+        public JsonResult PopulateForm(int Id)
         {
-            var todo = GetById(Id.Id);
+            var todo = GetById(Id);
             return Json(todo);
         }
 

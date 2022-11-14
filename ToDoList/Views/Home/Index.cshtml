@@ -12,14 +12,12 @@
                 {
                     <tr>
                         <td class="todos-column" scope="row">@task.Id</td>
-                        <td class="todos-column">@task.Task</td>
+                        <td id="todo-name" class="todos-column">@task.Task</td>
                         <td class="buttons-column">
-                        <input class="delete-btn" data-task-id="@task.Id" type="submit" value="Supprimer">
-                        <input class="update-btn" data-task-id="@task.Id" type="submit" value="Update">
+                            <input class="delete-btn" data-task-id="@task.Id" type="submit" value="Supprimer">
+                            <input class="update-btn" data-task-id="@task.Id" type="submit" value="Update">
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-    </div>
-</div>

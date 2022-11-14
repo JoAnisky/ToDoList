@@ -13,7 +13,8 @@ function InitUpdateListener(){
     updateBtn.forEach(btn => {
         btn.addEventListener("click", (e) => {
             let taskId = e.target.dataset.taskId;
-            UpdateTask(taskId);
+            let taskName = document.getElementById("todo-name").value;
+            UpdateTask(taskId, taskName);
         })
     })
 }
@@ -29,25 +30,26 @@ async function DeleteTask(taskId) {
         const message = `Il y'a eu une erreur : ${response.status}`;
         throw new Error(message);
     } else {
-        console.log(response);
         location.reload();
     }
 }
 
-async function DeleteTask(taskId) {
+async function UpdateTask(taskId, taskName) {
     let Id = parseInt(taskId);
+    let todo = taskName;
     let response = await fetch('Home/PopulateForm', {
         method: "GET",
         headers : {'Content-Type' : 'application/json'},
-        body: JSON.stringify({Id : Id})
+        data: JSON.stringify({Id : Id})
     });
     if (!response.ok) {
         const message = `Il y'a eu une erreur : ${response.status}`;
         throw new Error(message);
     } else {
-        response => {
-
-        }
+        document.getElementById("Todo_Task").value = todo; 
+        document.getElementById("Todo_Id").value = Id;
+        document.getElementById("form-button").value = "Update Todo";
+        document.getElementById("form-action").setAttribute("action", "Home/Update");
     }
 }
 
