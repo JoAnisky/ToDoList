@@ -20,6 +20,14 @@ namespace ToDoList.Controllers
             return View(todoListViewModel);
         }
 
+        [HttpGet]
+
+        public JsonResult PopulateForm([FromBody] TodoItem Id)
+        {
+            var todo = GetById(Id.Id);
+            return Json(todo);
+        }
+
         internal TodoViewModel GetAllTodos()
         {
             List<TodoItem> todoList = new();
@@ -54,13 +62,43 @@ namespace ToDoList.Controllers
                         }
                        
                     };
-                }
-                        
+                }                        
             }
             return new TodoViewModel 
             {
                 TodoList = todoList 
             };
+        }
+
+        internal TodoItem GetById(int id)
+        {
+            TodoItem todo = new();
+            string connStr = "server=localhost;userid=todouser;password=todouser2022;database=TodoListDB";
+
+            using (MySqlConnection connexion = new(connStr))
+            {
+                using (var tableCmd = connexion.CreateCommand())
+                {
+                    connexion.Open();
+                    tableCmd.CommandText = $"SELECT * FROM todo WHERE Id = '{id}'";
+
+                    using (var reader = tableCmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            todo.Id = reader.GetInt32(0);
+                            todo.Task = reader.GetString(1);
+                        }
+                        else
+                        {
+                            return todo;
+                        }
+
+                    };
+                }
+            }
+            return todo;
         }
 
         public RedirectResult Insert(TodoItem todo)
@@ -85,6 +123,56 @@ namespace ToDoList.Controllers
                 }
                 return Redirect("https://localhost:7097/");
             }
-        }    
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteTask([FromBody] TodoItem Id)
+        {
+            // Chaine de connexion
+            string connStr = "server=localhost;userid=todouser;password=todouser2022;database=TodoListDB";
+
+            using (MySqlConnection connexion = new MySqlConnection(connStr))
+            {
+                using (var tableCmd = connexion.CreateCommand())
+                {
+                    connexion.Open();
+                    tableCmd.CommandText = $"DELETE FROM todo WHERE Id='{Id.Id}'";
+                    Console.WriteLine(tableCmd.CommandText);
+                    try
+                    {
+                        tableCmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+                return Json(new {});
+            }
+        }
+
+        public RedirectResult Update(TodoItem todo)
+        {
+            // Chaine de connexion
+            string connStr = "server=localhost;userid=todouser;password=todouser2022;database=TodoListDB";
+
+            using (MySqlConnection connexion = new MySqlConnection(connStr))
+            {
+                using (var tableCmd = connexion.CreateCommand())
+                {
+                    connexion.Open();
+                    tableCmd.CommandText = $"UPDATE todo SET name = '{todo.Task}' WHERE Id = '{todo.Id}'";
+                    try
+                    {
+                        tableCmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+                return Redirect("https://localhost:7097/");
+            }
+        }
     }
 }
