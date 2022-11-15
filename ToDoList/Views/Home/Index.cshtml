@@ -12,8 +12,8 @@
                 {
                     <tr>
                         <td class="todos-column" scope="row">@task.Id</td>
-                        <td id="todo-name" class="todos-column">@task.Task</td>
-                        <td class="buttons-column">
+                        <td class="todos-column task">@task.Task</td>
+                    <td class="buttons-column" data-value="@task.Task">
                             <input class="delete-btn" data-task-id="@task.Id" type="submit" value="Supprimer">
                             <input class="update-btn" data-task-id="@task.Id" type="submit" value="Update">
                         </td>

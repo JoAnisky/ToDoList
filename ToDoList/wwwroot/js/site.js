@@ -13,7 +13,9 @@ function InitUpdateListener(){
     updateBtn.forEach(btn => {
         btn.addEventListener("click", (e) => {
             let taskId = e.target.dataset.taskId;
-            let taskName = document.getElementById("todo-name").value;
+            let taskName = e.target.parentNode.dataset.value;
+
+            console.log(taskName);
             UpdateTask(taskId, taskName);
         })
     })

@@ -126,7 +126,7 @@ namespace ToDoList.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteTask([FromBody] TodoItem Id)
+        public JsonResult DeleteTask([FromBody] TodoItem Id)
         {
             // Chaine de connexion
             string connStr = "server=localhost;userid=todouser;password=todouser2022;database=TodoListDB";
@@ -161,7 +161,7 @@ namespace ToDoList.Controllers
                 using (var tableCmd = connexion.CreateCommand())
                 {
                     connexion.Open();
-                    tableCmd.CommandText = $"UPDATE todo SET name = '{todo.Task}' WHERE Id = '{todo.Id}'";
+                    tableCmd.CommandText = $"UPDATE todo SET Task = '{todo.Task}' WHERE Id = '{todo.Id}'";
                     try
                     {
                         tableCmd.ExecuteNonQuery();
