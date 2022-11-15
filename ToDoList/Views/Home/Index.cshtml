@@ -1,23 +1,27 @@
 ﻿@model TodoViewModel
-
-        <table>
-            <thead>
-                <tr>
-                    <th class="col">Id</th>
-                    <th class="col">Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach(var task in Model.TodoList)
-                {
-                    <tr>
-                        <td class="todos-column" scope="row">@task.Id</td>
-                        <td class="todos-column task">@task.Task</td>
-                    <td class="buttons-column" data-value="@task.Task">
-                            <input class="delete-btn" data-task-id="@task.Id" type="submit" value="Supprimer">
-                            <input class="update-btn" data-task-id="@task.Id" type="submit" value="Update">
-                        </td>
+    <div class="row justify-content-center">
+        <div class="col-xl-6 col-lg-8 col-md-8 col-sm-10">
+            <table class="table">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col" class="col">Id</th>
+                        <th scope="col" class="col">Name</th>
+                        <th scope="col"></th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach(var task in Model.TodoList)
+                    {
+                        <tr>
+                            <td class="todos-column" scope="row">@task.Id</td>
+                            <td class="todos-column task">@task.Task</td>
+                            <td class="buttons-column" data-value="@task.Task">
+                                <input type="submit" class="delete-btn btn btn-danger" data-task-id="@task.Id" value="Supprimer">
+                                <input type="submit" class="update-btn  btn btn-danger" data-task-id="@task.Id" value="MAJ">
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
