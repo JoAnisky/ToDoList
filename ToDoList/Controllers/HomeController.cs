@@ -9,10 +9,12 @@ namespace ToDoList.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IConfiguration _cfg;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _cfg = configuration;
         }
 
         public IActionResult Index()
@@ -29,6 +31,9 @@ namespace ToDoList.Controllers
             {
                 DotNetEnv.Env.Load();
                 string connStr = Environment.GetEnvironmentVariable("CONNEXION");
+
+                //Lecture appsetting sans devoir rajouter un Nuget
+                connStr = _cfg.GetRequiredSection("db").Value;
 
                 if(connStr != null)
                 {
