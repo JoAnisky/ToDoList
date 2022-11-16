@@ -2,6 +2,7 @@
 using ToDoList.Models;
 using MySql.Data.MySqlClient;
 using ToDoList.Models.ViewModels;
+using System.Data.Common;
 
 namespace ToDoList.Controllers
 {
@@ -16,71 +17,119 @@ namespace ToDoList.Controllers
 
         public IActionResult Index()
         {
+            DBConnectInfos();
             var todoListViewModel = GetAllTodos();
             return View(todoListViewModel);
+           
+        }
+
+        public string DBConnectInfos()
+        {
+            try
+            {
+                DotNetEnv.Env.Load();
+                string connStr = Environment.GetEnvironmentVariable("CONNEXION");
+
+                if(connStr != null)
+                {
+
+                    return connStr;
+                }
+
+                return "";
+            }
+            catch(Exception error)
+            {
+                return "";
+            }
+
+        }
+
+        public MySqlDataReader? DBQuery(string query)
+        {
+            try
+            {
+                string connStr = DBConnectInfos();
+
+                if (!string.IsNullOrEmpty(connStr))
+                {
+                    using MySqlConnection connexion = new(connStr);
+
+                    using var tableCmd = connexion.CreateCommand();
+
+                    connexion.Open();
+                    tableCmd.CommandText = query;//"SELECT * FROM todo";
+
+                    using var reader = tableCmd.ExecuteReader();
+                    return reader;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         [HttpGet]
-
         public JsonResult PopulateForm(int Id)
         {
-            var todo = GetById(Id);
+            TodoItem todo = GetById(Id);
             return Json(todo);
         }
 
         internal TodoViewModel GetAllTodos()
         {
             List<TodoItem> todoList = new();
-            string connStr = "server=localhost;userid=todouser;password=todouser2022;database=TodoListDB";
+            string request = "SELECT Id, Task FROM todo";             
+            MySqlDataReader reader = DBQuery(request);
 
-            using (MySqlConnection connexion = new(connStr))
+            if (reader != null)
             {
-                using (var tableCmd = connexion.CreateCommand())
+                if (reader.HasRows)
                 {
-                    connexion.Open();
-                    tableCmd.CommandText = "SELECT * FROM todo";
-                    
-                    using (var reader = tableCmd.ExecuteReader())
+                    while (reader.Read())
                     {
-                        if (reader.HasRows) {
-                            while (reader.Read())
+                        todoList.Add(
+                            new TodoItem
                             {
-                                todoList.Add(
-                                    new TodoItem
-                                    {
-                                        Id = reader.GetInt32(0),
-                                        Task = reader.GetString(1),
-                                    });
-                            }
-                        }
-                        else
-                        {
-                            return new TodoViewModel
-                            {
-                                TodoList = todoList
-                            };
-                        }
-                       
+                                Id = reader.GetInt32(0),
+                                Task = reader.GetString(1),
+                            });
+                    }
+                }
+                else
+                {
+                    return new TodoViewModel
+                    {
+                        TodoList = todoList
                     };
-                }                        
+                }
+
+                return new TodoViewModel
+                {
+                    TodoList = todoList
+                };
             }
-            return new TodoViewModel 
+
+            return new TodoViewModel
             {
-                TodoList = todoList 
+                TodoList = todoList
             };
+
         }
 
         internal TodoItem GetById(int id)
         {
             TodoItem todo = new();
-            string connStr = "server=localhost;userid=todouser;password=todouser2022;database=TodoListDB";
+            string connStr = DBConnectInfos();
 
             using (MySqlConnection connexion = new(connStr))
             {
                 using (var tableCmd = connexion.CreateCommand())
                 {
                     connexion.Open();
-                    tableCmd.CommandText = $"SELECT * FROM todo WHERE Id = '{id}'";
+                    tableCmd.CommandText = $"SELECT Id, Task FROM todo WHERE Id = '{id}'";
 
                     using (var reader = tableCmd.ExecuteReader())
                     {
@@ -104,7 +153,7 @@ namespace ToDoList.Controllers
         public RedirectResult Insert(TodoItem todo)
         {
             // Chaine de connexion
-            string connStr = "server=localhost;userid=todouser;password=todouser2022;database=TodoListDB";
+            string connStr = DBConnectInfos();
 
             using (MySqlConnection connexion = new MySqlConnection(connStr))
             {
@@ -125,11 +174,11 @@ namespace ToDoList.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpDelete]
         public JsonResult DeleteTask([FromBody] TodoItem Id)
         {
             // Chaine de connexion
-            string connStr = "server=localhost;userid=todouser;password=todouser2022;database=TodoListDB";
+            string connStr = DBConnectInfos();
 
             using (MySqlConnection connexion = new MySqlConnection(connStr))
             {
@@ -151,11 +200,11 @@ namespace ToDoList.Controllers
             }
         }
 
+        [HttpPatch]
         public RedirectResult Update(TodoItem todo)
         {
             // Chaine de connexion
-            string connStr = "server=localhost;userid=todouser;password=todouser2022;database=TodoListDB";
-
+            string connStr = DBConnectInfos();
             using (MySqlConnection connexion = new MySqlConnection(connStr))
             {
                 using (var tableCmd = connexion.CreateCommand())
