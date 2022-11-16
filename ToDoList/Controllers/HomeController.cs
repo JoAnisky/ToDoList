@@ -18,7 +18,7 @@ namespace ToDoList.Controllers
         public IActionResult Index()
         {
             DBConnectInfos();
-            var todoListViewModel = GetAllTodos();
+            TodoViewModel todoListViewModel = GetAllTodos();
             return View(todoListViewModel);
            
         }
@@ -55,12 +55,12 @@ namespace ToDoList.Controllers
                 {
                     using MySqlConnection connexion = new(connStr);
 
-                    using var tableCmd = connexion.CreateCommand();
+                    using MySqlCommand tableCmd = connexion.CreateCommand();
 
                     connexion.Open();
                     tableCmd.CommandText = query;//"SELECT * FROM todo";
 
-                    using var reader = tableCmd.ExecuteReader();
+                    using MySqlDataReader reader = tableCmd.ExecuteReader();
                     return reader;
                 }
                 return null;
@@ -81,9 +81,9 @@ namespace ToDoList.Controllers
         internal TodoViewModel GetAllTodos()
         {
             List<TodoItem> todoList = new();
-            string request = "SELECT Id, Task FROM todo";             
+            string request = "SELECT Id, Task FROM todo";
+            
             MySqlDataReader reader = DBQuery(request);
-
             if (reader != null)
             {
                 if (reader.HasRows)
